@@ -1,0 +1,142 @@
+{
+  "type": "Collection",
+  "id": "noaacwVIIRSnppiceconcSP06Daily4Day",
+  "stac_version": "1.0.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/scientific/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+  ],
+  "title": "Ice Concentration, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), 4-Day Composite",
+  "description": "Enterprise Ice Concentration/ Ice Mask/ Ice Surface Temperature Products",
+  "license": "proprietary",
+  "keywords": [
+    "Earth Science > Cryosphere > Sea Ice > Sea Ice Concentration",
+    "Earth Science > Oceans > Sea Ice > Sea Ice Concentration",
+    "VIIRS",
+    "S-NPP",
+    "South Pole",
+    "Near Real-Time",
+    "NOAA CoastWatch"
+  ],
+  "providers": [
+    {
+      "name": "NOAA NESDIS CoastWatch",
+      "roles": [
+        "producer",
+        "processor"
+      ],
+      "url": "https://coastwatch.noaa.gov"
+    },
+    {
+      "name": "NOAA CoastWatch",
+      "roles": [
+        "host"
+      ],
+      "url": "https://coastwatch.noaa.gov"
+    }
+  ],
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          -180,
+          -90,
+          180,
+          -47.0
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2021-08-29T00:00:00Z",
+          null
+        ]
+      ]
+    }
+  },
+  "summaries": {
+    "platform": [
+      "S-NPP"
+    ],
+    "instruments": [
+      "VIIRS"
+    ],
+    "proj:epsg": [
+      3976
+    ]
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "./collections/noaacwVIIRSnppiceconcSP06Daily4Day/collection.json",
+      "type": "application/json",
+      "title": "This collection"
+    },
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "NOAA CoastWatch Ice Products STAC Catalog"
+    },
+    {
+      "rel": "parent",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "NOAA CoastWatch Ice Products STAC Catalog"
+    },
+    {
+      "rel": "describedby",
+      "href": "https://coastwatch.noaa.gov/erddap/info/noaacwVIIRSnppiceconcSP06Daily4Day/index.html",
+      "type": "text/html",
+      "title": "ERDDAP dataset information page"
+    }
+  ],
+  "assets": {
+    "erddap": {
+      "href": "https://coastwatch.noaa.gov/erddap/griddap/noaacwVIIRSnppiceconcSP06Daily4Day",
+      "type": "application/x-netcdf",
+      "title": "ERDDAP griddap service",
+      "roles": [
+        "data"
+      ],
+      "pw:service_type": "erddap",
+      "pw:erddap_server": "https://coastwatch.noaa.gov/erddap",
+      "pw:erddap_protocol": "griddap",
+      "pw:dataset_id": "noaacwVIIRSnppiceconcSP06Daily4Day",
+      "pw:output_formats": [
+        "nc",
+        "csv",
+        "json",
+        "htmlTable",
+        "esriAscii",
+        "mat",
+        "geotif",
+        "odvTxt"
+      ],
+      "pw:wms_endpoint": "https://coastwatch.noaa.gov/erddap/wms/noaacwVIIRSnppiceconcSP06Daily4Day/request"
+    }
+  },
+  "item_assets": {
+    "IceConc": {
+      "type": "application/x-netcdf",
+      "title": "Ice Concentration",
+      "roles": [
+        "data"
+      ],
+      "units": "1"
+    }
+  },
+  "pw:service_type": "erddap",
+  "pw:conventions": "CF-1.6, COARDS, ACDD-1.3",
+  "pw:naming_authority": "gov.noaa.coastwatch",
+  "pw:standard_name_vocabulary": "CF Standard Name Table v29",
+  "pw:processing_level": "Near Real-Time",
+  "pw:resolution_spatial": "~750m (6km polar stereographic grid)",
+  "pw:resolution_temporal": "P4D",
+  "pw:license_text": "https://science.nasa.gov/earth-science/earth-science-data/data-information-policy/ The data may be used and redistributed for free but is not intended for legal use, since it may contain inaccuracies. Neither the data Contributor, ERD, NOAA, nor the United States Government, nor any of their employees or contractors, makes any warranty, express or implied, including warranties of merchantability and fitness for a particular purpose, or assumes any legal liability for the accuracy, completeness, or usefulness, of this information.",
+  "pw:creator_name": "NOAA/NESDIS/STAR/SOCD/CoastWatch",
+  "pw:creator_email": "coastwatch.info@noaa.gov",
+  "proj:epsg": 3976,
+  "proj:proj4": "+proj=stere +lat_0=-90 +lat_ts=-70 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+}
