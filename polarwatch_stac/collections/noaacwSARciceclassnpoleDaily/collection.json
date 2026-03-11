@@ -6,63 +6,73 @@
     "https://stac-extensions.github.io/scientific/v1.0.0/schema.json",
     "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
   ],
-  "title": "CIS Ice Classification, SAR Composite, Near Real-Time, 1km, North Pole, Daily",
-  "description": "This dataset contains a composite of Synthetic Aperture Radar (SAR) Canadian Ice Service (CIS) ice classification images covering the Arctic for a period of one day. Produced in SAROPS by the NOAA STAR SOCD Water Surface Conditions/SAR Team. Includes data from Sentinel-1A/B, RADARSAT-2, and RADARSAT Constellation Mission.",
+  "title": "Ice Classification, Metop-C Advanced SCATterometer (ASCAT), 4km, North Pole (Arctic), Daily",
+  "description": "The ASCAT Ice Classification system takes Enhanced Resolution (4.5 km x 4.5 km) ASCAT Normalized Radar Cross Section (NRCS) and in a two-step process creates an Ice Classification mask with 3 classes (seasonal, perennial, mixed). Primary Input data Enhanced Resolution (4.5 km x 4.5 km) ASCAT Normalized Radar Cross Section (NRCS) created by the Scatterometer Image Reconstruction (SIR) algorithm. Developed by David Long at BYU. National Ice Center's 4 km Interactive Snow and Ice Mask (IMS). Warning: Microwave-based ASCAT sea ice classification may not be reliable during Northern summer months or melt periods (approximately May to September) because melting snow and ice have a distinct microwave radar return that may prevent accurate identification of ice type.",
   "license": "proprietary",
   "keywords": [
-    "Earth Science > Cryosphere > Sea Ice > Ice Extent",
-    "Earth Science > Cryosphere > Sea Ice > Ice Classification",
-    "SAR",
-    "Synthetic Aperture Radar",
-    "Arctic",
-    "North Pole",
-    "Ice Classification",
-    "CIS",
-    "NRCS"
+    "advanced",
+    "altitude",
+    "ascat",
+    "coastwatch",
+    "Earth Science > Oceans > Ice",
+    "environmental",
+    "geoprojected",
+    "ice",
+    "ice classification",
+    "ice distribution",
+    "information",
+    "masked",
+    "metop",
+    "metop-c",
+    "national",
+    "nesdis",
+    "noaa",
+    "polar",
+    "polarwatch",
+    "satellite",
+    "scatterometer",
+    "service",
+    "states",
+    "time",
+    "united",
+    "usdoc"
   ],
   "providers": [
     {
-      "name": "NOAA/NESDIS/STAR/SOCD",
+      "name": "USDOC/NOAA/NESDIS PolarWatch",
       "roles": [
         "producer",
         "processor"
       ],
-      "url": "https://coastwatch.noaa.gov"
-    },
-    {
-      "name": "NOAA CoastWatch",
-      "roles": [
-        "host"
-      ],
-      "url": "https://coastwatch.noaa.gov"
+      "url": "https://coastwatch.noaa.gov/erddap"
     }
   ],
   "extent": {
     "spatial": {
       "bbox": [
         [
-          -180,
-          47.0,
-          180,
-          90
+          -3272748.092178,
+          -3272748.091917,
+          3272748.091917,
+          3272748.092178
         ]
       ]
     },
     "temporal": {
       "interval": [
         [
-          "2022-03-05T00:00:00Z",
-          null
+          "2021-12-04T12:00:00Z",
+          "2026-03-09T12:00:00Z"
         ]
       ]
     }
   },
   "summaries": {
     "platform": [
-      "SENTINEL-1A/B, RADARSAT-2, RADARSAT Constellation Mission"
+      "METOP-C"
     ],
     "instruments": [
-      "C-SAR"
+      "ASCAT"
     ],
     "proj:epsg": [
       3413
@@ -79,19 +89,25 @@
       "rel": "root",
       "href": "../../catalog.json",
       "type": "application/json",
-      "title": "NOAA CoastWatch Ice Products STAC Catalog"
+      "title": "STAC Catalog"
     },
     {
       "rel": "parent",
       "href": "../../catalog.json",
       "type": "application/json",
-      "title": "NOAA CoastWatch Ice Products STAC Catalog"
+      "title": "STAC Catalog"
+    },
+    {
+      "rel": "about",
+      "href": "https://coastwatch.noaa.gov/erddap/griddap/noaacwSARciceclassnpoleDaily.html",
+      "type": "text/html",
+      "title": "ERDDAP Data Access Form"
     },
     {
       "rel": "describedby",
       "href": "https://coastwatch.noaa.gov/erddap/info/noaacwSARciceclassnpoleDaily/index.html",
       "type": "text/html",
-      "title": "ERDDAP dataset information page"
+      "title": "ERDDAP Dataset Information"
     }
   ],
   "assets": {
@@ -115,30 +131,28 @@
         "mat",
         "geotif",
         "odvTxt"
-      ],
-      "pw:wms_endpoint": "https://coastwatch.noaa.gov/erddap/wms/noaacwSARciceclassnpoleDaily/request"
+      ]
     }
   },
   "item_assets": {
-    "CISIceClass": {
+    "IceClass": {
       "type": "application/x-netcdf",
-      "title": "CIS Ice Classification",
+      "title": "IceClass",
       "roles": [
         "data"
-      ],
-      "units": "1"
+      ]
     }
   },
   "pw:service_type": "erddap",
-  "pw:conventions": "CF-1.6, ACCD-1.3, COARDS, ACDD-1.3",
-  "pw:naming_authority": "gov.noaa.ncei",
-  "pw:standard_name_vocabulary": "CF Standard Name Table v70",
-  "pw:processing_level": "NOAA Level 2",
-  "pw:resolution_spatial": "1km",
-  "pw:resolution_temporal": "P1D",
-  "pw:license_text": "Contains modified Copernicus Sentinel data. Sentinel data is obtained from https://scihub.copernicus.eu/dhus. RADARSAT Constellation Mission Imagery Copyright Government of Canada. RCM data is obtained from https://www.eodms-sgdot.nrcan-rncan.gc.ca/index-en.html. RADARSAT-2 Data and Products Copyright MDA Geospatial Services Inc. - All Rights Reserved. The data may be used and redistributed for free but is not intended for legal use.",
-  "pw:creator_name": "NOAA STAR SOCD Water Surface Conditions/SAR Team",
-  "pw:creator_email": "sean.helfrich@noaa.gov",
+  "pw:conventions": "CF-1.6, COARDS, ACDD-1.3",
+  "pw:naming_authority": "",
+  "pw:standard_name_vocabulary": "CF Standard Name Table v79",
+  "pw:processing_level": "",
+  "pw:resolution_spatial": "",
+  "pw:resolution_temporal": "",
+  "pw:license_text": "The data may be used and redistributed for free but is not intended\nfor legal use, since it may contain inaccuracies. Neither the data\nContributor, ERD, NOAA, nor the United States Government, nor any\nof their employees or contractors, makes any warranty, express or\nimplied, including warranties of merchantability and fitness for a\nparticular purpose, or assumes any legal liability for the accuracy,\ncompleteness, or usefulness, of this information.",
+  "pw:creator_name": "NOAA CoastWatch/PolarWatch",
+  "pw:creator_email": "coastwatch.info@noaa.gov",
   "proj:epsg": 3413,
   "proj:proj4": "+proj=stere +lat_0=90 +lat_ts=60 +lon_0=-45 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
 }

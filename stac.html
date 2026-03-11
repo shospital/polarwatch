@@ -9,6 +9,185 @@
     <link rel="stylesheet" href="./css/leaflet.css" />
     <link rel="stylesheet" href="./css/pw-theme.css" />
   <link rel="icon" type="image/png" href="./css/images/noaa_logo_circle_72x72.svg" />
+    <style>
+      .items-summary {
+        color: #4b5563;
+        font-size: 12px;
+      }
+
+      .items-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        background: rgba(15, 23, 42, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .items-modal {
+        width: min(1100px, 100%);
+        max-height: 85vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #itemsModalBody {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        flex-direction: column;
+      }
+
+      .items-content {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        flex-direction: column;
+      }
+
+      .items-table-wrap {
+        flex: 1;
+        min-height: 0;
+        max-height: 56vh;
+        overflow: auto;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+      }
+
+      .items-table {
+        width: 100%;
+        min-width: 860px;
+        table-layout: fixed;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      .items-table th,
+      .items-table td {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 8px 10px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .items-table th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: #f8fafc;
+      }
+
+      .items-table th:nth-child(1),
+      .items-table td:nth-child(1) {
+        width: 26%;
+      }
+
+      .items-table th:nth-child(2),
+      .items-table td:nth-child(2) {
+        width: 16%;
+      }
+
+      .items-table th:nth-child(3),
+      .items-table td:nth-child(3) {
+        width: 30%;
+      }
+
+      .items-table th:nth-child(4),
+      .items-table td:nth-child(4) {
+        width: 16%;
+      }
+
+      .items-table th:nth-child(5),
+      .items-table td:nth-child(5) {
+        width: 12%;
+        white-space: nowrap;
+        text-align: center;
+      }
+
+      .items-table td:nth-child(1),
+      .items-table td:nth-child(3) {
+        overflow-wrap: anywhere;
+      }
+
+      .asset-type-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        color: #334155;
+      }
+
+      .asset-type-badge.netcdf {
+        border-color: #8ab8e7;
+        background: #e8f3ff;
+        color: #184b80;
+      }
+
+      .items-pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        padding-bottom: 2px;
+      }
+
+      .items-pagination-status {
+        color: #4b5563;
+        font-size: 12px;
+      }
+
+      .items-pagination-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .items-page-size-label,
+      .items-page-indicator {
+        font-size: 12px;
+        color: #374151;
+      }
+
+      .items-page-size-select {
+        width: auto;
+        min-width: 72px;
+      }
+
+      .metadata-json {
+        max-height: 62vh;
+        overflow: auto;
+        margin: 0;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px;
+        background: #f8fafc;
+        color: #0f172a;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      @media (max-width: 900px) {
+        .items-modal {
+          width: min(1100px, 98vw);
+        }
+
+        .items-table {
+          min-width: 760px;
+        }
+
+        .items-table-wrap {
+          max-height: 52vh;
+        }
+      }
+    </style>
 
   </head>
   <body>
@@ -72,13 +251,17 @@
     </footer>
 
     <script src="./js/bootstrap.bundle.min.js"></script>
-    <script src="./js/leaflet.js"></script>
+    <!-- For now, i will skip map -->
+    <!-- <script src="./js/leaflet.js"></script> -->
     <script>
       const state = {
         datasets: [],
         filtered: [],
         selectedId: null,
         datasetPanelHidden: false,
+        itemsByDatasetId: {},
+        itemsPaginationByDatasetId: {},
+        metadataByDatasetId: {},
       }
 
       const catalogUrl = 'polarwatch_stac/catalog.json'
@@ -101,6 +284,15 @@
       let map = null
       let bboxLayer = null
       let mapContainerElement = null
+      let itemsModalBackdrop = null
+      let itemsModalDatasetTitle = null
+      let itemsModalDatasetId = null
+      let itemsModalBody = null
+      let metadataModalBackdrop = null
+      let metadataModalDatasetTitle = null
+      let metadataModalDatasetId = null
+      let metadataModalSource = null
+      let metadataModalBody = null
 
       function setStatus(message) {
         statusText.textContent = message
@@ -132,6 +324,374 @@
 
       function isExternalLink(url) {
         return /^https?:\/\//i.test(url || '')
+      }
+
+      function resolveRelativeUrl(baseUrl, href) {
+        if (!href) return ''
+
+        try {
+          return new URL(href, new URL(baseUrl, window.location.href)).toString()
+        } catch {
+          return href
+        }
+      }
+
+      function getDisplayNameFromHref(href) {
+        if (!href) return ''
+
+        try {
+          const parsed = new URL(href, window.location.href)
+          const filename = parsed.pathname.split('/').filter(Boolean).pop()
+          return filename || href
+        } catch {
+          const filename = href.split('/').filter(Boolean).pop()
+          return filename || href
+        }
+      }
+
+      function isNetcdfAsset(asset) {
+        const type = `${asset?.type || ''}`.toLowerCase()
+        const href = `${asset?.href || ''}`.toLowerCase()
+        return type.includes('netcdf') || href.endsWith('.nc') || href.endsWith('.nc4')
+      }
+
+      function extractItemsLink(collection) {
+        const links = collection?.links || []
+        const found = links.find((link) => link.rel === 'items' && typeof link.href === 'string' && link.href.length > 0)
+        return found?.href || ''
+      }
+
+      function buildMetadataCandidates(dataset) {
+        const candidates = [
+          resolveRelativeUrl(dataset.collectionUrl, './metadata.json'),
+          resolveRelativeUrl(dataset.collectionUrl, './meta.json'),
+          resolveRelativeUrl(dataset.collectionUrl, './collection.json'),
+        ]
+
+        return [...new Set(candidates.filter(Boolean))]
+      }
+
+      async function fetchDatasetMetadata(dataset) {
+        const candidates = buildMetadataCandidates(dataset)
+
+        for (const candidateUrl of candidates) {
+          try {
+            const json = await fetchJson(candidateUrl)
+            return {
+              source: candidateUrl,
+              data: json,
+            }
+          } catch {
+            // Try the next metadata candidate.
+          }
+        }
+
+        throw new Error('Unable to load metadata from metadata.json, meta.json, or collection.json')
+      }
+
+      function createMetadataModal() {
+        if (metadataModalBackdrop) return
+
+        metadataModalBackdrop = document.createElement('div')
+        metadataModalBackdrop.className = 'items-modal-backdrop'
+        metadataModalBackdrop.style.display = 'none'
+        metadataModalBackdrop.innerHTML = `
+          <div class="items-modal panel" role="dialog" aria-modal="true" aria-label="Dataset metadata">
+            <div class="panel-header">
+              <h3 class="mb-0" id="metadataModalTitle">Dataset Metadata</h3>
+              <button class="btn btn-sm" id="closeMetadataModalBtn">Close</button>
+            </div>
+            <p class="dataset-id mb-1"><strong>Dataset ID:</strong> <span id="metadataModalDatasetId">n/a</span></p>
+            <p class="dataset-id mb-2"><strong>Source:</strong> <span id="metadataModalSource">n/a</span></p>
+            <div id="metadataModalBody"></div>
+          </div>
+        `
+
+        document.body.appendChild(metadataModalBackdrop)
+
+        metadataModalDatasetTitle = document.getElementById('metadataModalTitle')
+        metadataModalDatasetId = document.getElementById('metadataModalDatasetId')
+        metadataModalSource = document.getElementById('metadataModalSource')
+        metadataModalBody = document.getElementById('metadataModalBody')
+
+        const closeButton = document.getElementById('closeMetadataModalBtn')
+        closeButton.addEventListener('click', closeMetadataModal)
+        metadataModalBackdrop.addEventListener('click', (event) => {
+          if (event.target === metadataModalBackdrop) {
+            closeMetadataModal()
+          }
+        })
+      }
+
+      function closeMetadataModal() {
+        if (!metadataModalBackdrop) return
+        metadataModalBackdrop.style.display = 'none'
+      }
+
+      function renderMetadataModal(dataset, metadata, errorMessage = '') {
+        createMetadataModal()
+
+        metadataModalDatasetTitle.textContent = `${dataset.title || dataset.id} Metadata`
+        metadataModalDatasetId.textContent = dataset.id || 'n/a'
+
+        if (errorMessage) {
+          metadataModalSource.textContent = 'Unavailable'
+          metadataModalBody.innerHTML = `<p class="error mb-0">${errorMessage}</p>`
+          metadataModalBackdrop.style.display = 'flex'
+          return
+        }
+
+        metadataModalSource.textContent = metadata.source
+        metadataModalBody.innerHTML = `<pre class="metadata-json">${JSON.stringify(metadata.data, null, 2)}</pre>`
+        metadataModalBackdrop.style.display = 'flex'
+      }
+
+      async function openMetadataModal(dataset) {
+        createMetadataModal()
+        metadataModalDatasetTitle.textContent = `${dataset.title || dataset.id} Metadata`
+        metadataModalDatasetId.textContent = dataset.id || 'n/a'
+        metadataModalSource.textContent = 'Loading...'
+        metadataModalBody.innerHTML = '<p class="mb-0">Loading metadata...</p>'
+        metadataModalBackdrop.style.display = 'flex'
+
+        if (state.metadataByDatasetId[dataset.id]) {
+          renderMetadataModal(dataset, state.metadataByDatasetId[dataset.id])
+          return
+        }
+
+        try {
+          const metadata = await fetchDatasetMetadata(dataset)
+          state.metadataByDatasetId[dataset.id] = metadata
+          renderMetadataModal(dataset, metadata)
+        } catch (error) {
+          renderMetadataModal(dataset, null, `Unable to load metadata: ${error.message}`)
+        }
+      }
+
+      function formatItemDatetime(item) {
+        return item?.properties?.datetime || item?.properties?.start_datetime || 'n/a'
+      }
+
+      function flattenItemAssets(itemCollection, itemCollectionUrl) {
+        const features = Array.isArray(itemCollection?.features) ? itemCollection.features : []
+
+        return features.flatMap((feature) => {
+          const assets = feature?.assets || {}
+          const itemId = feature?.id || 'unknown-item'
+          const itemDatetime = formatItemDatetime(feature)
+
+          return Object.entries(assets)
+            .filter(([, asset]) => typeof asset?.href === 'string' && asset.href.length > 0)
+            .map(([assetKey, asset]) => {
+              const resolvedHref = resolveRelativeUrl(itemCollectionUrl, asset.href)
+              return {
+                id: `${itemId}:${assetKey}`,
+                itemId,
+                itemDatetime,
+                assetKey,
+                title: asset.title || getDisplayNameFromHref(asset.href) || assetKey,
+                href: resolvedHref,
+                type: asset.type || '',
+                isNetcdf: isNetcdfAsset(asset),
+              }
+            })
+        })
+      }
+
+      function createItemsModal() {
+        if (itemsModalBackdrop) return
+
+        itemsModalBackdrop = document.createElement('div')
+        itemsModalBackdrop.className = 'items-modal-backdrop'
+        itemsModalBackdrop.style.display = 'none'
+        itemsModalBackdrop.innerHTML = `
+          <div class="items-modal panel" role="dialog" aria-modal="true" aria-label="Dataset item assets">
+            <div class="panel-header">
+              <h3 class="mb-0" id="itemsModalTitle">Dataset Items</h3>
+              <button class="btn btn-sm" id="closeItemsModalBtn">Close</button>
+            </div>
+            <p class="dataset-id mb-2"><strong>Dataset ID:</strong> <span id="itemsModalDatasetId">n/a</span></p>
+            <div id="itemsModalBody"></div>
+          </div>
+        `
+
+        document.body.appendChild(itemsModalBackdrop)
+
+        itemsModalDatasetTitle = document.getElementById('itemsModalTitle')
+        itemsModalDatasetId = document.getElementById('itemsModalDatasetId')
+        itemsModalBody = document.getElementById('itemsModalBody')
+
+        const closeButton = document.getElementById('closeItemsModalBtn')
+        closeButton.addEventListener('click', closeItemsModal)
+        itemsModalBackdrop.addEventListener('click', (event) => {
+          if (event.target === itemsModalBackdrop) {
+            closeItemsModal()
+          }
+        })
+      }
+
+      function closeItemsModal() {
+        if (!itemsModalBackdrop) return
+        itemsModalBackdrop.style.display = 'none'
+      }
+
+      function getItemsPagination(datasetId, totalCount) {
+        const current = state.itemsPaginationByDatasetId[datasetId] || { page: 1, pageSize: 25 }
+        const safePageSize = Number(current.pageSize) > 0 ? Number(current.pageSize) : 25
+        const totalPages = Math.max(1, Math.ceil(totalCount / safePageSize))
+        const safePage = Math.min(Math.max(Number(current.page) || 1, 1), totalPages)
+
+        const next = { page: safePage, pageSize: safePageSize }
+        state.itemsPaginationByDatasetId[datasetId] = next
+        return next
+      }
+
+      function renderPaginatedItemsTable(dataset, assets) {
+        const pagination = getItemsPagination(dataset.id, assets.length)
+        const totalPages = Math.max(1, Math.ceil(assets.length / pagination.pageSize))
+        const startIndex = (pagination.page - 1) * pagination.pageSize
+        const endIndex = startIndex + pagination.pageSize
+        const pageAssets = assets.slice(startIndex, endIndex)
+
+        const rows = pageAssets
+          .map((asset) => {
+            const typeLabel = asset.type || (asset.isNetcdf ? 'application/x-netcdf' : 'unknown')
+            const typeClass = asset.isNetcdf ? 'asset-type-badge netcdf' : 'asset-type-badge'
+
+            return `
+              <tr>
+                <td>${asset.itemId}</td>
+                <td>${asset.itemDatetime}</td>
+                <td>${asset.title}</td>
+                <td><span class="${typeClass}">${typeLabel}</span></td>
+                <td><a href="${asset.href}" target="_blank" rel="noreferrer">Download</a></td>
+              </tr>
+            `
+          })
+          .join('')
+
+        itemsModalBody.innerHTML = `
+          <div class="items-content">
+            <div class="items-table-wrap">
+              <table class="items-table">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Date/Time</th>
+                    <th>Asset</th>
+                    <th>Type</th>
+                    <th>Download</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows}
+                </tbody>
+              </table>
+            </div>
+            <div class="items-pagination">
+              <div class="items-pagination-status">
+                Showing ${startIndex + 1}-${Math.min(endIndex, assets.length)} of ${assets.length} assets
+              </div>
+              <div class="items-pagination-controls">
+                <label for="itemsPageSizeSelect" class="items-page-size-label">Rows:</label>
+                <select id="itemsPageSizeSelect" class="form-select form-select-sm items-page-size-select">
+                  <option value="10" ${pagination.pageSize === 10 ? 'selected' : ''}>10</option>
+                  <option value="25" ${pagination.pageSize === 25 ? 'selected' : ''}>25</option>
+                  <option value="50" ${pagination.pageSize === 50 ? 'selected' : ''}>50</option>
+                  <option value="100" ${pagination.pageSize === 100 ? 'selected' : ''}>100</option>
+                </select>
+                <button id="itemsPrevPageBtn" class="btn btn-sm btn-outline-secondary" ${pagination.page <= 1 ? 'disabled' : ''}>Prev</button>
+                <span class="items-page-indicator">Page ${pagination.page} of ${totalPages}</span>
+                <button id="itemsNextPageBtn" class="btn btn-sm btn-outline-secondary" ${pagination.page >= totalPages ? 'disabled' : ''}>Next</button>
+              </div>
+            </div>
+          </div>
+        `
+
+        const prevBtn = document.getElementById('itemsPrevPageBtn')
+        const nextBtn = document.getElementById('itemsNextPageBtn')
+        const pageSizeSelect = document.getElementById('itemsPageSizeSelect')
+
+        if (prevBtn) {
+          prevBtn.addEventListener('click', () => {
+            state.itemsPaginationByDatasetId[dataset.id] = {
+              ...pagination,
+              page: Math.max(1, pagination.page - 1),
+            }
+            renderPaginatedItemsTable(dataset, assets)
+          })
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener('click', () => {
+            state.itemsPaginationByDatasetId[dataset.id] = {
+              ...pagination,
+              page: Math.min(totalPages, pagination.page + 1),
+            }
+            renderPaginatedItemsTable(dataset, assets)
+          })
+        }
+
+        if (pageSizeSelect) {
+          pageSizeSelect.addEventListener('change', (event) => {
+            const nextPageSize = Number(event.target.value) || 25
+            state.itemsPaginationByDatasetId[dataset.id] = {
+              page: 1,
+              pageSize: nextPageSize,
+            }
+            renderPaginatedItemsTable(dataset, assets)
+          })
+        }
+      }
+
+      function renderItemsModal(dataset, assets, errorMessage = '') {
+        createItemsModal()
+        itemsModalDatasetTitle.textContent = `${dataset.title || dataset.id} Items`
+        itemsModalDatasetId.textContent = dataset.id || 'n/a'
+
+        if (errorMessage) {
+          itemsModalBody.innerHTML = `<p class="error mb-0">${errorMessage}</p>`
+          itemsModalBackdrop.style.display = 'flex'
+          return
+        }
+
+        if (!assets || assets.length === 0) {
+          itemsModalBody.innerHTML = '<p class="empty mb-0">No downloadable assets were found.</p>'
+          itemsModalBackdrop.style.display = 'flex'
+          return
+        }
+
+        renderPaginatedItemsTable(dataset, assets)
+
+        itemsModalBackdrop.style.display = 'flex'
+      }
+
+      async function openItemsModal(dataset) {
+        if (!dataset?.itemsLink) {
+          return
+        }
+
+        createItemsModal()
+        itemsModalDatasetTitle.textContent = `${dataset.title || dataset.id} Items`
+        itemsModalDatasetId.textContent = dataset.id || 'n/a'
+        itemsModalBody.innerHTML = '<p class="mb-0">Loading item assets...</p>'
+        itemsModalBackdrop.style.display = 'flex'
+
+        if (state.itemsByDatasetId[dataset.id]) {
+          renderItemsModal(dataset, state.itemsByDatasetId[dataset.id])
+          return
+        }
+
+        try {
+          const itemsUrl = resolveRelativeUrl(dataset.collectionUrl, dataset.itemsLink)
+          const itemCollection = await fetchJson(itemsUrl)
+          const assets = flattenItemAssets(itemCollection, itemsUrl)
+          state.itemsByDatasetId[dataset.id] = assets
+          renderItemsModal(dataset, assets)
+          renderDetails()
+        } catch (error) {
+          renderItemsModal(dataset, [], `Unable to load items for this dataset: ${error.message}`)
+        }
       }
 
       function extractServiceType(collection) {
@@ -333,14 +893,21 @@
           <p><strong>proj:epsg:</strong> ${selected.projEpsg || 'n/a'}</p>
           <p><strong>proj:proj4:</strong> ${selected.projProj4 || 'n/a'}</p>
 
-          <p><strong>Data Info:</strong> ${isExternalLink(selected.datasetInformation) ? `<a href="${selected.datasetInformation}" target="_blank" rel="noreferrer">metadata page</a>` : 'n/a'}</p>
+          <p>
+            <strong>Items:</strong>
+            ${selected.itemsLink ? '<button id="openItemsBtn" class="btn btn-outline-primary btn-sm ms-2">View Items</button>' : 'n/a'}
+            ${selected.itemsLink && state.itemsByDatasetId[selected.id] ? `<span class="items-summary ms-2">${state.itemsByDatasetId[selected.id].length} assets, ${state.itemsByDatasetId[selected.id].filter((asset) => asset.isNetcdf).length} netCDF</span>` : ''}
+          </p>
+
+          <p>
+            <strong>Dataset Metadata:</strong>
+            <button id="openMetadataBtn" class="btn btn-outline-primary btn-sm ms-2">View Metadata</button>
+            ${isExternalLink(selected.datasetInformation) ? `<a class="ms-2" href="${selected.datasetInformation}" target="_blank" rel="noreferrer">Open external page</a>` : ''}
+          </p>
           <div><strong>Data Access Form:</strong> ${assetsMarkup}</div>
 
 
-          <div class="bbox-map-wrap">
-            <h4 class="mt-3 mb-2">Geographic Area</h4>
-            ${selected.bbox ? '<div id="bboxMap" class="bbox-map"></div>' : '<p class="empty mb-0">No bounding box available for map display.</p>'}
-          </div>
+
           ${selected.loadError ? `<p class="error">Some details were unavailable: ${selected.loadError}</p>` : ''}
         `
 
@@ -348,6 +915,20 @@
           setTimeout(() => {
             renderMap(selected.bbox)
           }, 0)
+        }
+
+        const openItemsBtn = document.getElementById('openItemsBtn')
+        if (openItemsBtn) {
+          openItemsBtn.addEventListener('click', () => {
+            openItemsModal(selected)
+          })
+        }
+
+        const openMetadataBtn = document.getElementById('openMetadataBtn')
+        if (openMetadataBtn) {
+          openMetadataBtn.addEventListener('click', () => {
+            openMetadataModal(selected)
+          })
         }
       }
 
@@ -438,6 +1019,7 @@
                 return {
                   id,
                   title: collection.title || link.title || id,
+                  collectionUrl: `polarwatch_stac/collections/${encodeURIComponent(id)}/collection.json`,
                   summary: collection.description || '',
                   dateRange: extractDateRange(collection),
                   serviceType: extractServiceType(collection),
@@ -448,6 +1030,7 @@
                   providers: collection.providers || [],
                   dataAccessForm: extractDataAccessForm(collection),
                   datasetInformation: extractDatasetInformation(collection),
+                  itemsLink: extractItemsLink(collection),
                   allLinks: extractAllLinks(collection),
                   keywords: collection.keywords || [],
                 }
@@ -455,6 +1038,7 @@
                 return {
                   id,
                   title: link.title || id,
+                  collectionUrl: `polarwatch_stac/collections/${encodeURIComponent(id)}/collection.json`,
                   summary: '',
                   dateRange: 'n/a',
                   serviceType: '',
@@ -465,6 +1049,7 @@
                   providers: [],
                   dataAccessForm: '',
                   datasetInformation: '',
+                  itemsLink: '',
                   allLinks: [],
                   keywords: [],
                   loadError: error.message,
@@ -477,7 +1062,7 @@
           state.filtered = [...state.datasets]
           state.selectedId = state.filtered[0]?.id || null
 
-          setStatus(state.datasets.length > 0 ? `Loaded ${state.datasets.length} datasets` : 'No datasets found in catalog')
+          setStatus(state.datasets.length > 0 ? `  Loaded ${state.datasets.length} datasets` : 'No datasets found in catalog')
           renderList()
           renderDetails()
         } catch (error) {

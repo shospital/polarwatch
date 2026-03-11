@@ -1,9 +1,9 @@
 {
   "type": "Catalog",
-  "id": "polarwatch-data-catalog",
+  "id": "polarwatch-stac",
   "stac_version": "1.0.0",
-  "title": "NOAA PolarWatch Data Catalog",
-  "description": "STAC catalog of NOAA CoastWatch ice-related satellite datasets served via ERDDAP. Includes SAR ice classification and NRCS composites, plus VIIRS ice concentration, ice surface temperature, and ice thickness products from NOAA-20 and Suomi NPP. Covers North and South Pole regions (Polar Stereographic), daily and 4-day composites.",
+  "title": "PolarWatch STAC Catalog",
+  "description": "STAC catalog for PolarWatch datasets. Collections are served via ERDDAP or HTTPS.",
   "links": [
     {
       "rel": "self",
@@ -18,166 +18,207 @@
       "title": "Root catalog"
     },
     {
-      "rel": "about",
-      "href": "https://coastwatch.noaa.gov/erddap/",
-      "type": "text/html",
-      "title": "NOAA CoastWatch ERDDAP Server"
-    },
-    {
       "rel": "child",
       "href": "./collections/noaacwSARciceclassnpoleDaily/collection.json",
       "type": "application/json",
-      "title": "CIS Ice Classification, SAR Composite, Near Real-Time, 1km, North Pole, Daily"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwSARnrcsnpoleDaily/collection.json",
-      "type": "application/json",
-      "title": "Normalized Radar Cross Section, SAR Composite, Near Real-Time, 1km, North Pole, Daily"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20iceconcNP06Daily/collection.json",
-      "type": "application/json",
-      "title": "Ice Concentration, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), Daily"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20iceconcNP06Daily4Day/collection.json",
-      "type": "application/json",
-      "title": "Ice Concentration, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), 4-Day Composite"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20iceconcSP06Daily/collection.json",
-      "type": "application/json",
-      "title": "Ice Concentration, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), Daily"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20iceconcSP06Daily4Day/collection.json",
-      "type": "application/json",
-      "title": "Ice Concentration, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), 4-Day Composite"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20icesrftempNP06Daily/collection.json",
-      "type": "application/json",
-      "title": "Ice Surface Temperature, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), Daily"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20icesrftempNP06Daily4Day/collection.json",
-      "type": "application/json",
-      "title": "Ice Surface Temperature, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), 4-Day Composite"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20icesrftempSP06Daily/collection.json",
-      "type": "application/json",
-      "title": "Ice Surface Temperature, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), Daily"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20icesrftempSP06Daily4Day/collection.json",
-      "type": "application/json",
-      "title": "Ice Surface Temperature, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), 4-Day Composite"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20icethickNP06Daily/collection.json",
-      "type": "application/json",
-      "title": "Ice Thickness, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), Daily"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20icethickNP06Daily4Day/collection.json",
-      "type": "application/json",
-      "title": "Ice Thickness, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), 4-Day Composite"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20icethickSP06Daily/collection.json",
-      "type": "application/json",
-      "title": "Ice Thickness, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), Daily"
-    },
-    {
-      "rel": "child",
-      "href": "./collections/noaacwVIIRSn20icethickSP06Daily4Day/collection.json",
-      "type": "application/json",
-      "title": "Ice Thickness, NOAA NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), 4-Day Composite"
+      "title": "Ice Classification, Metop-C Advanced SCATterometer (ASCAT), 4km, North Pole (Arctic), Daily",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppiceconcNP06Daily/collection.json",
       "type": "application/json",
-      "title": "Ice Concentration, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), Daily"
+      "title": "Ice Concentration, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), Daily",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppiceconcNP06Daily4Day/collection.json",
       "type": "application/json",
-      "title": "Ice Concentration, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), 4-Day Composite"
+      "title": "Ice Concentration, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), Daily 4-day Composite",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppiceconcSP06Daily/collection.json",
       "type": "application/json",
-      "title": "Ice Concentration, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), Daily"
+      "title": "Ice Concentration, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), Daily",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppiceconcSP06Daily4Day/collection.json",
       "type": "application/json",
-      "title": "Ice Concentration, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), 4-Day Composite"
+      "title": "Ice Concentration, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), Daily 4-day Composite",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20iceconcNP06Daily/collection.json",
+      "type": "application/json",
+      "title": "Ice Concentration, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), Daily",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20iceconcNP06Daily4Day/collection.json",
+      "type": "application/json",
+      "title": "Ice Concentration, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), Daily 4-day Composite",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20iceconcSP06Daily/collection.json",
+      "type": "application/json",
+      "title": "Ice Concentration, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), Daily",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20iceconcSP06Daily4Day/collection.json",
+      "type": "application/json",
+      "title": "Ice Concentration, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), Daily 4-day Composite",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppicesrftempNP06Daily/collection.json",
       "type": "application/json",
-      "title": "Ice Surface Temperature, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), Daily"
+      "title": "Ice Surface Temperature, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), Daily",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppicesrftempNP06Daily4Day/collection.json",
       "type": "application/json",
-      "title": "Ice Surface Temperature, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), 4-Day Composite"
+      "title": "Ice Surface Temperature, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), Daily 4-day Composite",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppicesrftempSP06Daily/collection.json",
       "type": "application/json",
-      "title": "Ice Surface Temperature, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), Daily"
+      "title": "Ice Surface Temperature, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), Daily",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppicesrftempSP06Daily4Day/collection.json",
       "type": "application/json",
-      "title": "Ice Surface Temperature, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), 4-Day Composite"
+      "title": "Ice Surface Temperature, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), Daily 4-day Composite",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20icesrftempNP06Daily/collection.json",
+      "type": "application/json",
+      "title": "Ice Surface Temperature, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), Daily",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20icesrftempNP06Daily4Day/collection.json",
+      "type": "application/json",
+      "title": "Ice Surface Temperature, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), Daily 4-day Composite",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20icesrftempSP06Daily/collection.json",
+      "type": "application/json",
+      "title": "Ice Surface Temperature, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), Daily",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20icesrftempSP06Daily4Day/collection.json",
+      "type": "application/json",
+      "title": "Ice Surface Temperature, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), Daily 4-day Composite",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppicethickNP06Daily/collection.json",
       "type": "application/json",
-      "title": "Ice Thickness, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), Daily"
+      "title": "Ice Thickness, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), Daily",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppicethickNP06Daily4Day/collection.json",
       "type": "application/json",
-      "title": "Ice Thickness, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), 4-Day Composite"
+      "title": "Ice Thickness, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (North), Daily 4-day Composite",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppicethickSP06Daily/collection.json",
       "type": "application/json",
-      "title": "Ice Thickness, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), Daily"
+      "title": "Ice Thickness, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), Daily",
+      "pw:service_type": "erddap"
     },
     {
       "rel": "child",
       "href": "./collections/noaacwVIIRSnppicethickSP06Daily4Day/collection.json",
       "type": "application/json",
-      "title": "Ice Thickness, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), 4-Day Composite"
+      "title": "Ice Thickness, NOAA S-NPP VIIRS, Near Real-Time, Polar Stereographic (South), Daily 4-day Composite",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20icethickNP06Daily/collection.json",
+      "type": "application/json",
+      "title": "Ice Thickness, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), Daily",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20icethickNP06Daily4Day/collection.json",
+      "type": "application/json",
+      "title": "Ice Thickness, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (North), Daily 4-day Composite",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20icethickSP06Daily/collection.json",
+      "type": "application/json",
+      "title": "Ice Thickness, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), Daily",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwVIIRSn20icethickSP06Daily4Day/collection.json",
+      "type": "application/json",
+      "title": "Ice Thickness, NOAA-20 VIIRS, Near Real-Time, Polar Stereographic (South), Daily 4-day Composite",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/noaacwSARnrcsnpoleDaily/collection.json",
+      "type": "application/json",
+      "title": "Normalized Radar Cross Section, SAR Composite, Near Real-Time, 1km, North Pole, Daily",
+      "pw:service_type": "erddap"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/snowfox_miz2_daily/collection.json",
+      "type": "application/json",
+      "title": "X- Experimental Sea Ice Classification, SAR Composite, Near Real-Time, 1km, North Pole, Daily",
+      "pw:service_type": "https"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/lara_snowdepth_5yrs_awi_nh/collection.json",
+      "type": "application/json",
+      "title": "LaRA (Laser/Radar Altimeter) snow depth 5-year monthly mean (using AWI/CS-2 standard algorithm), Arctic, 25km, 2018-2023 (winter)",
+      "pw:service_type": "https"
+    },
+    {
+      "rel": "child",
+      "href": "./collections/lara_snowdepth_5yrs_esa_nh/collection.json",
+      "type": "application/json",
+      "title": "LaRA (Laser/Radar Altimeter) snow depth 5-year monthly mean (using ESA/CS-2 standard algorithm), Arctic, 25km, 2018-2023 (winter)",
+      "pw:service_type": "https"
     }
   ],
   "conformsTo": [
