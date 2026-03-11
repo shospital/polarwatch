@@ -895,7 +895,7 @@
 
           <p>
             <strong>Items:</strong>
-            ${selected.itemsLink ? '<button id="openItemsBtn" class="btn btn-outline-primary btn-sm ms-2">View Items</button>' : 'n/a'}
+            ${selected.itemsLink ? '<button id="openItemsBtn" class="btn btn-outline-primary btn-sm ms-2">Data Files</button>' : 'n/a'}
             ${selected.itemsLink && state.itemsByDatasetId[selected.id] ? `<span class="items-summary ms-2">${state.itemsByDatasetId[selected.id].length} assets, ${state.itemsByDatasetId[selected.id].filter((asset) => asset.isNetcdf).length} netCDF</span>` : ''}
           </p>
 
