@@ -947,7 +947,7 @@
           <p><strong>proj:proj4:</strong> ${selected.projProj4 || 'n/a'}</p>
 
           <p>
-            <strong>Items:</strong>
+            <strong>Data Files:</strong>
             ${selected.itemsLink ? '<button id="openItemsBtn" class="btn btn-outline-primary btn-sm ms-2">Data Files</button>' : 'n/a'}
             ${selected.itemsLink && state.itemsByDatasetId[selected.id] ? `<span class="items-summary ms-2">${state.itemsByDatasetId[selected.id].length} assets, ${state.itemsByDatasetId[selected.id].filter((asset) => asset.isNetcdf).length} netCDF</span>` : ''}
           </p>
