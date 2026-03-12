@@ -920,9 +920,9 @@
             blocks.push(`<div class="mb-2">${dataAccessPrimaryMarkup}</div>`)
           }
 
-          if ((selected.allLinks?.assets || []).length > 0) {
-            blocks.push(`<div><strong>Assets:</strong> ${assetsMarkup}</div>`)
-          }
+          // if ((selected.allLinks?.assets || []).length > 0) {
+          //   blocks.push(`<div><strong>Assets:</strong> ${assetsMarkup}</div>`)
+          // }
 
           if (blocks.length === 0) {
             return 'n/a'
@@ -985,38 +985,38 @@
         }
       }
 
-      function renderMap(bbox) {
-        const mapElement = document.getElementById('bboxMap')
-        if (!mapElement) return
+      // function renderMap(bbox) {
+      //   const mapElement = document.getElementById('bboxMap')
+      //   if (!mapElement) return
 
-        if (map && mapContainerElement !== mapElement) {
-          map.remove()
-          map = null
-          bboxLayer = null
-        }
+      //   if (map && mapContainerElement !== mapElement) {
+      //     map.remove()
+      //     map = null
+      //     bboxLayer = null
+      //   }
 
-        if (!map) {
-          map = L.map(mapElement, { center: [0, 0], zoom: 2, worldCopyJump: true })
-          mapContainerElement = mapElement
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: '&copy; OpenStreetMap contributors',
-          }).addTo(map)
-        } else {
-          map.invalidateSize()
-        }
+      //   if (!map) {
+      //     map = L.map(mapElement, { center: [0, 0], zoom: 2, worldCopyJump: true })
+      //     mapContainerElement = mapElement
+      //     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      //       maxZoom: 18,
+      //       attribution: '&copy; OpenStreetMap contributors',
+      //     }).addTo(map)
+      //   } else {
+      //     map.invalidateSize()
+      //   }
 
-        const [west, south, east, north] = bbox
-        const bounds = [[south, west], [north, east]]
+      //   const [west, south, east, north] = bbox
+      //   const bounds = [[south, west], [north, east]]
 
-        if (bboxLayer) {
-          bboxLayer.remove()
-        }
+      //   if (bboxLayer) {
+      //     bboxLayer.remove()
+      //   }
 
-        bboxLayer = L.rectangle(bounds, { color: '#2c6ead', weight: 2, fillOpacity: 0.15 }).addTo(map)
-        map.fitBounds(bounds, { padding: [20, 20] })
-        setTimeout(() => map.invalidateSize(), 0)
-      }
+      //   bboxLayer = L.rectangle(bounds, { color: '#2c6ead', weight: 2, fillOpacity: 0.15 }).addTo(map)
+      //   map.fitBounds(bounds, { padding: [20, 20] })
+      //   setTimeout(() => map.invalidateSize(), 0)
+      // }
 
       function applySearch() {
         const query = searchInput.value.trim().toLowerCase()
