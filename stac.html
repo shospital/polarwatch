@@ -326,6 +326,13 @@
         return /^https?:\/\//i.test(url || '')
       }
 
+      function isOpenableLink(url) {
+        if (typeof url !== 'string') return false
+        const value = url.trim()
+        if (!value) return false
+        return !/^javascript:/i.test(value)
+      }
+
       function resolveRelativeUrl(baseUrl, href) {
         if (!href) return ''
 
@@ -730,8 +737,32 @@
       }
 
       function extractDataAccessForm(collection) {
-        const about = (collection.links || []).find((link) => link.rel === 'about' && typeof link.href === 'string')
-        if (about) return about.href
+        const links = collection.links || []
+        const preferredRels = ['about', 'data', 'via', 'alternate']
+        const accessLink = links.find(
+          (link) => preferredRels.includes(link.rel) && typeof link.href === 'string' && link.href.length > 0,
+        )
+
+        if (accessLink?.href) {
+          return accessLink.href
+        }
+
+        const dataAsset = Object.values(collection.assets || {}).find((asset) => {
+          if (typeof asset?.href !== 'string' || asset.href.length === 0) {
+            return false
+          }
+
+          const roles = Array.isArray(asset.roles) ? asset.roles : []
+          const type = `${asset.type || ''}`.toLowerCase()
+          const title = `${asset.title || ''}`.toLowerCase()
+
+          return roles.includes('data') || type.includes('netcdf') || type.includes('hdf') || title.includes('data')
+        })
+
+        if (dataAsset?.href) {
+          return dataAsset.href
+        }
+
         const htmlAsset = Object.values(collection.assets || {}).find((asset) => asset?.type === 'text/html' && asset?.href)
         return htmlAsset?.href || ''
       }
@@ -870,13 +901,35 @@
           ? `<ul class="mb-0">${selected.allLinks.assets
               .map((item) => {
                 const label = `${item.key}: ${item.title}`
-                const click = isExternalLink(item.href)
+                const click = isOpenableLink(item.href)
                   ? `<a href="${item.href}" target="_blank" rel="noreferrer">${label}</a>`
                   : `<span>${label}</span>`
                 return `<li>${click}<div class="dataset-id">${item.href}</div></li>`
               })
               .join('')}</ul>`
           : '<p>n/a</p>'
+
+        const dataAccessPrimaryMarkup = selected.dataAccessForm
+          ? `<a href="${selected.dataAccessForm}" target="_blank" rel="noreferrer">Open</a><div class="dataset-id">${selected.dataAccessForm}</div>`
+          : ''
+
+        const dataAccessMarkup = (() => {
+          const blocks = []
+
+          if (dataAccessPrimaryMarkup) {
+            blocks.push(`<div class="mb-2">${dataAccessPrimaryMarkup}</div>`)
+          }
+
+          if ((selected.allLinks?.assets || []).length > 0) {
+            blocks.push(`<div><strong>Assets:</strong> ${assetsMarkup}</div>`)
+          }
+
+          if (blocks.length === 0) {
+            return 'n/a'
+          }
+
+          return blocks.join('')
+        })()
 
         detailsPanel.innerHTML = `
           <div class="panel-header"><h3 class="mb-0">${selected.title}</h3></div>
@@ -904,7 +957,7 @@
             <button id="openMetadataBtn" class="btn btn-outline-primary btn-sm ms-2">View Metadata</button>
             ${isExternalLink(selected.datasetInformation) ? `<a class="ms-2" href="${selected.datasetInformation}" target="_blank" rel="noreferrer">Open external page</a>` : ''}
           </p>
-          <div><strong>Data Access Form:</strong> ${assetsMarkup}</div>
+          <div><strong>Data Access Form:</strong> ${dataAccessMarkup}</div>
 
 
 

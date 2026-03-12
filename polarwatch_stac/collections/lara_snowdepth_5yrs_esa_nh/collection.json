@@ -78,6 +78,12 @@
       "title": "STAC Catalog"
     },
     {
+      "rel": "items",
+      "href": "./items.json",
+      "type": "application/json",
+      "title": "Item listing"
+    },
+    {
       "rel": "about",
       "href": "https://polarwatch.noaa.gov/erddap/griddap/lara_snowdepth_5yrs_esa_nh.html",
       "type": "text/html",
@@ -88,42 +94,6 @@
       "href": "https://polarwatch.noaa.gov/erddap/info/lara_snowdepth_5yrs_esa_nh/index.html",
       "type": "text/html",
       "title": "ERDDAP Dataset Information"
-    },
-    {
-      "rel": "item",
-      "href": "./lara_snowdepth_5yrs_esa_nh_20180112.json",
-      "type": "application/geo+json",
-      "title": "2018-01-12T00:00:00+00:00"
-    },
-    {
-      "rel": "item",
-      "href": "./lara_snowdepth_5yrs_esa_nh_20180212.json",
-      "type": "application/geo+json",
-      "title": "2018-02-12T00:00:00+00:00"
-    },
-    {
-      "rel": "item",
-      "href": "./lara_snowdepth_5yrs_esa_nh_20180312.json",
-      "type": "application/geo+json",
-      "title": "2018-03-12T00:00:00+00:00"
-    },
-    {
-      "rel": "item",
-      "href": "./lara_snowdepth_5yrs_esa_nh_20180412.json",
-      "type": "application/geo+json",
-      "title": "2018-04-12T00:00:00+00:00"
-    },
-    {
-      "rel": "item",
-      "href": "./lara_snowdepth_5yrs_esa_nh_20181112.json",
-      "type": "application/geo+json",
-      "title": "2018-11-12T00:00:00+00:00"
-    },
-    {
-      "rel": "item",
-      "href": "./lara_snowdepth_5yrs_esa_nh_20181212.json",
-      "type": "application/geo+json",
-      "title": "2018-12-12T00:00:00+00:00"
     }
   ],
   "assets": {
