@@ -931,6 +931,13 @@
           return blocks.join('')
         })()
 
+        const isErddapService = `${selected.serviceType || ''}`.toLowerCase() === 'erddap'
+        const dataFilesMarkup = isErddapService
+          ? dataAccessMarkup
+          : selected.itemsLink
+            ? '<button id="openItemsBtn" class="btn btn-outline-primary btn-sm ms-2">Data Files</button>'
+            : 'n/a'
+
         detailsPanel.innerHTML = `
           <div class="panel-header"><h3 class="mb-0">${selected.title}</h3></div>
           <p class="dataset-id-line">
@@ -946,18 +953,18 @@
           <p><strong>proj:epsg:</strong> ${selected.projEpsg || 'n/a'}</p>
           <p><strong>proj:proj4:</strong> ${selected.projProj4 || 'n/a'}</p>
 
-          <p>
+          <div>
             <strong>Data Files:</strong>
-            ${selected.itemsLink ? '<button id="openItemsBtn" class="btn btn-outline-primary btn-sm ms-2">Data Files</button>' : 'n/a'}
-            ${selected.itemsLink && state.itemsByDatasetId[selected.id] ? `<span class="items-summary ms-2">${state.itemsByDatasetId[selected.id].length} assets, ${state.itemsByDatasetId[selected.id].filter((asset) => asset.isNetcdf).length} netCDF</span>` : ''}
-          </p>
+            ${dataFilesMarkup}
+            ${!isErddapService && selected.itemsLink && state.itemsByDatasetId[selected.id] ? `<span class="items-summary ms-2">${state.itemsByDatasetId[selected.id].length} assets, ${state.itemsByDatasetId[selected.id].filter((asset) => asset.isNetcdf).length} netCDF</span>` : ''}
+          </div>
 
           <p>
             <strong>Dataset Metadata:</strong>
             <button id="openMetadataBtn" class="btn btn-outline-primary btn-sm ms-2">View Metadata</button>
             ${isExternalLink(selected.datasetInformation) ? `<a class="ms-2" href="${selected.datasetInformation}" target="_blank" rel="noreferrer">Open external page</a>` : ''}
           </p>
-          <div><strong>Data Access Form:</strong> ${dataAccessMarkup}</div>
+<!--          <div><strong>Data Access Form:</strong> ${dataAccessMarkup}</div> -->
 
 
 
