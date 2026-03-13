@@ -7,6 +7,10 @@ body {
   padding-top: 70px;
 }
 
+
+/* INDEX PAGE STYLE */
+
+
 .hero {
   position: relative;
   background: url('./images/seaice2.jpg') no-repeat center center/cover;
@@ -100,3 +104,34 @@ footer { background-color: #2c6ead; color: #fff; text-align: center; padding: 20
   .page-content { padding-top: 86px; }
 }
  
+
+
+/* TRAINING PAGE STYLE */
+
+
+.training-card {
+  height: 260px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.card-overlay {
+  background: rgba(10,20,35,0.75);
+  color: white;
+  padding: 30px;
+  width: 100%;
+}
+
+/* Background images */
+.code-card {
+  background-image: url("/images/code.jpg");
+}
+
+.training-card-bg {
+  background-image: url("/images/training.jpg");
+}
