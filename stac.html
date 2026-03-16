@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NOAA PolarWatch STAC</title>
+    <title>NOAA PolarWatch Data Catalog</title>
     <link rel="stylesheet" href="./css/all.min.css" />
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
     <link href="./css/stac.css" rel="stylesheet" />
@@ -36,7 +36,7 @@
       <div class="container">
         <div class="topbar">
           <div>
-            <h2 class="mb-1" id="catalogTitle">PolarWatch Catalog</h2>
+            <h2 class="mb-1" id="catalogTitle">PolarWatch Data Catalog</h2>
             <p class="status mb-0" id="statusText">Loading catalog...</p>
           </div>
           <div class="actions">
@@ -895,7 +895,7 @@
 
         try {
           const catalog = await fetchJson(catalogUrl)
-          catalogTitle.textContent = catalog.title || 'PolarWatch STAC Catalog'
+          catalogTitle.textContent = catalog.title || 'PolarWatch Data Catalog'
 
           const childLinks = (catalog.links || []).filter(
             (link) => link.rel === 'child' && typeof link.href === 'string' && /collections\/[^/]+\/collection\.json$/.test(link.href),
