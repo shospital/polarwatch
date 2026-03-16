@@ -6,188 +6,10 @@
     <title>NOAA PolarWatch STAC</title>
     <link rel="stylesheet" href="./css/all.min.css" />
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./css/leaflet.css" />
+    <link href="./css/stac.css" rel="stylesheet" />
     <link rel="stylesheet" href="./css/pw-theme.css" />
   <link rel="icon" type="image/png" href="./css/images/noaa_logo_circle_72x72.svg" />
-    <style>
-      .items-summary {
-        color: #4b5563;
-        font-size: 12px;
-      }
 
-      .items-modal-backdrop {
-        position: fixed;
-        inset: 0;
-        z-index: 2000;
-        background: rgba(15, 23, 42, 0.45);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 16px;
-      }
-
-      .items-modal {
-        width: min(1100px, 100%);
-        max-height: 85vh;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-      }
-
-      #itemsModalBody {
-        display: flex;
-        flex: 1;
-        min-height: 0;
-        flex-direction: column;
-      }
-
-      .items-content {
-        display: flex;
-        flex: 1;
-        min-height: 0;
-        flex-direction: column;
-      }
-
-      .items-table-wrap {
-        flex: 1;
-        min-height: 0;
-        max-height: 56vh;
-        overflow: auto;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-      }
-
-      .items-table {
-        width: 100%;
-        min-width: 860px;
-        table-layout: fixed;
-        border-collapse: collapse;
-        font-size: 14px;
-      }
-
-      .items-table th,
-      .items-table td {
-        border-bottom: 1px solid #e5e7eb;
-        padding: 8px 10px;
-        text-align: left;
-        vertical-align: top;
-      }
-
-      .items-table th {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-        background: #f8fafc;
-      }
-
-      .items-table th:nth-child(1),
-      .items-table td:nth-child(1) {
-        width: 26%;
-      }
-
-      .items-table th:nth-child(2),
-      .items-table td:nth-child(2) {
-        width: 16%;
-      }
-
-      .items-table th:nth-child(3),
-      .items-table td:nth-child(3) {
-        width: 30%;
-      }
-
-      .items-table th:nth-child(4),
-      .items-table td:nth-child(4) {
-        width: 16%;
-      }
-
-      .items-table th:nth-child(5),
-      .items-table td:nth-child(5) {
-        width: 12%;
-        white-space: nowrap;
-        text-align: center;
-      }
-
-      .items-table td:nth-child(1),
-      .items-table td:nth-child(3) {
-        overflow-wrap: anywhere;
-      }
-
-      .asset-type-badge {
-        display: inline-block;
-        padding: 2px 8px;
-        border-radius: 999px;
-        font-size: 12px;
-        border: 1px solid #cbd5e1;
-        background: #f8fafc;
-        color: #334155;
-      }
-
-      .asset-type-badge.netcdf {
-        border-color: #8ab8e7;
-        background: #e8f3ff;
-        color: #184b80;
-      }
-
-      .items-pagination {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-top: 10px;
-        padding-bottom: 2px;
-      }
-
-      .items-pagination-status {
-        color: #4b5563;
-        font-size: 12px;
-      }
-
-      .items-pagination-controls {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-
-      .items-page-size-label,
-      .items-page-indicator {
-        font-size: 12px;
-        color: #374151;
-      }
-
-      .items-page-size-select {
-        width: auto;
-        min-width: 72px;
-      }
-
-      .metadata-json {
-        max-height: 62vh;
-        overflow: auto;
-        margin: 0;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        padding: 12px;
-        background: #f8fafc;
-        color: #0f172a;
-        font-size: 12px;
-        line-height: 1.4;
-      }
-
-      @media (max-width: 900px) {
-        .items-modal {
-          width: min(1100px, 98vw);
-        }
-
-        .items-table {
-          min-width: 760px;
-        }
-
-        .items-table-wrap {
-          max-height: 52vh;
-        }
-      }
-    </style>
 
   </head>
   <body>
@@ -252,8 +74,6 @@
     </footer>
 
     <script src="./js/bootstrap.bundle.min.js"></script>
-    <!-- For now, i will skip map -->
-    <!-- <script src="./js/leaflet.js"></script> -->
     <script>
       const state = {
         datasets: [],
@@ -265,7 +85,7 @@
         metadataByDatasetId: {},
       }
 
-      const catalogUrl = 'polarwatch_stac/catalog.json'
+      const catalogUrl = 'stac/catalog.json'
       const statusText = document.getElementById('statusText')
       const catalogTitle = document.getElementById('catalogTitle')
       const datasetList = document.getElementById('datasetList')
@@ -282,9 +102,7 @@
       toggleDatasetsBtn.textContent = 'Hide Datasets'
       document.querySelector('.actions').appendChild(toggleDatasetsBtn)
 
-      let map = null
-      let bboxLayer = null
-      let mapContainerElement = null
+      // Modal page for items and metadata display
       let itemsModalBackdrop = null
       let itemsModalDatasetTitle = null
       let itemsModalDatasetId = null
@@ -303,18 +121,16 @@
         if (state.datasetPanelHidden) {
           listPanel.style.display = 'none'
           browserGrid.style.gridTemplateColumns = '1fr'
-          toggleDatasetsBtn.textContent = 'Show Datasets'
+          toggleDatasetsBtn.textContent = 'Show List of Datasets'
         } else {
           listPanel.style.display = ''
           browserGrid.style.gridTemplateColumns = ''
-          toggleDatasetsBtn.textContent = 'Hide Datasets'
-        }
-
-        if (map) {
-          setTimeout(() => map.invalidateSize(), 0)
+          toggleDatasetsBtn.textContent = 'View Selected Dataset'
         }
       }
 
+      // Fetch jason file and return json data if request is successful, 
+      // otherwise throw an error
       async function fetchJson(url) {
         const response = await fetch(url)
         if (!response.ok) {
@@ -323,10 +139,12 @@
         return response.json()
       }
 
+      // Check existance
       function isExternalLink(url) {
         return /^https?:\/\//i.test(url || '')
       }
 
+      // Check accessible
       function isOpenableLink(url) {
         if (typeof url !== 'string') return false
         const value = url.trim()
@@ -357,6 +175,7 @@
         }
       }
 
+      // check for nc file
       function isNetcdfAsset(asset) {
         const type = `${asset?.type || ''}`.toLowerCase()
         const href = `${asset?.href || ''}`.toLowerCase()
@@ -369,32 +188,20 @@
         return found?.href || ''
       }
 
-      function buildMetadataCandidates(dataset) {
-        const candidates = [
-          resolveRelativeUrl(dataset.collectionUrl, './metadata.json'),
-          resolveRelativeUrl(dataset.collectionUrl, './meta.json'),
-          resolveRelativeUrl(dataset.collectionUrl, './collection.json'),
-        ]
-
-        return [...new Set(candidates.filter(Boolean))]
+      function extractItemLinks(collection) {
+        const links = collection?.links || []
+        return links
+          .filter((link) => link.rel === 'item' && typeof link.href === 'string' && link.href.length > 0)
+          .map((link) => link.href)
       }
 
       async function fetchDatasetMetadata(dataset) {
-        const candidates = buildMetadataCandidates(dataset)
-
-        for (const candidateUrl of candidates) {
-          try {
-            const json = await fetchJson(candidateUrl)
-            return {
-              source: candidateUrl,
-              data: json,
-            }
-          } catch {
-            // Try the next metadata candidate.
-          }
+        const metadataUrl = resolveRelativeUrl(dataset.collectionUrl, './collection.json')
+        const json = await fetchJson(metadataUrl)
+        return {
+          source: metadataUrl,
+          data: json,
         }
-
-        throw new Error('Unable to load metadata from metadata.json, meta.json, or collection.json')
       }
 
       function createMetadataModal() {
@@ -675,7 +482,9 @@
       }
 
       async function openItemsModal(dataset) {
-        if (!dataset?.itemsLink) {
+        const hasItemsCollection = typeof dataset?.itemsLink === 'string' && dataset.itemsLink.length > 0
+        const hasItemLinks = Array.isArray(dataset?.itemLinks) && dataset.itemLinks.length > 0
+        if (!hasItemsCollection && !hasItemLinks) {
           return
         }
 
@@ -691,9 +500,21 @@
         }
 
         try {
-          const itemsUrl = resolveRelativeUrl(dataset.collectionUrl, dataset.itemsLink)
-          const itemCollection = await fetchJson(itemsUrl)
-          const assets = flattenItemAssets(itemCollection, itemsUrl)
+          let assets = []
+
+          if (hasItemsCollection) {
+            const itemsUrl = resolveRelativeUrl(dataset.collectionUrl, dataset.itemsLink)
+            const itemCollection = await fetchJson(itemsUrl)
+            assets = flattenItemAssets(itemCollection, itemsUrl)
+          } else {
+            const itemUrls = dataset.itemLinks.map((href) => resolveRelativeUrl(dataset.collectionUrl, href))
+            const itemResponses = await Promise.all(itemUrls.map((url) => fetchJson(url)))
+            assets = itemResponses.flatMap((item, index) => {
+              const itemUrl = itemUrls[index]
+              return flattenItemAssets({ features: [item] }, itemUrl)
+            })
+          }
+
           state.itemsByDatasetId[dataset.id] = assets
           renderItemsModal(dataset, assets)
           renderDetails()
@@ -766,6 +587,51 @@
 
         const htmlAsset = Object.values(collection.assets || {}).find((asset) => asset?.type === 'text/html' && asset?.href)
         return htmlAsset?.href || ''
+      }
+
+      function extractErddapDataFormLink(collection) {
+        const links = collection?.links || []
+        const erddapLink = links.find(
+          (link) => ['erddap', 'erddap_endpoint'].includes(link.rel) && typeof link.href === 'string' && link.href.length > 0,
+        )
+        return erddapLink?.href || ''
+      }
+
+      function extractAssetDataHref(collection) {
+        const href = collection?.assets?.data?.href
+        return typeof href === 'string' && href.length > 0 ? href : ''
+      }
+
+      function extractHttpsDataFilesLink(collection) {
+        const links = collection?.links || []
+        const httpsLink = links.find((link) => link.rel === 'https' && typeof link.href === 'string' && link.href.length > 0)
+        if (httpsLink?.href) {
+          return httpsLink.href
+        }
+
+        return extractPrimaryDataAssetHref(collection)
+      }
+
+      function extractPrimaryDataAssetHref(collection) {
+        const assets = Object.values(collection?.assets || {})
+
+        const dataAsset = assets.find((asset) => {
+          if (typeof asset?.href !== 'string' || asset.href.length === 0) {
+            return false
+          }
+
+          const roles = Array.isArray(asset.roles) ? asset.roles : []
+          const type = `${asset.type || ''}`.toLowerCase()
+          const title = `${asset.title || ''}`.toLowerCase()
+
+          return roles.includes('data') || type.includes('netcdf') || type.includes('hdf') || title.includes('data')
+        })
+
+        if (dataAsset?.href) {
+          return dataAsset.href
+        }
+
+        return assets.find((asset) => typeof asset?.href === 'string' && asset.href.length > 0)?.href || ''
       }
 
       function extractDatasetInformation(collection) {
@@ -921,10 +787,6 @@
             blocks.push(`<div class="mb-2">${dataAccessPrimaryMarkup}</div>`)
           }
 
-          // if ((selected.allLinks?.assets || []).length > 0) {
-          //   blocks.push(`<div><strong>Assets:</strong> ${assetsMarkup}</div>`)
-          // }
-
           if (blocks.length === 0) {
             return 'n/a'
           }
@@ -933,10 +795,16 @@
         })()
 
         const isErddapService = `${selected.serviceType || ''}`.toLowerCase() === 'erddap'
-        const dataFilesMarkup = isErddapService
-          ? dataAccessMarkup
-          : selected.itemsLink
-            ? '<button id="openItemsBtn" class="btn btn-outline-primary btn-sm ms-2">Data Files</button>'
+        const erddapDataDirectoryMarkup = selected.erddapDirectoryLink
+          ? `<a href="${selected.erddapDirectoryLink}" target="_blank" rel="noreferrer">Open</a><div class="dataset-id">${selected.erddapDirectoryLink}</div>`
+          : 'n/a'
+        const httpsDatafileMarkup = selected.httpsDataFilesLink
+          ? `<a href="${selected.httpsDataFilesLink}" target="_blank" rel="noreferrer">Open</a><div class="dataset-id">${selected.httpsDataFilesLink}</div>`
+          : 'n/a'
+        const dataAccessControlMarkup = isErddapService
+          ? erddapDataDirectoryMarkup
+          : selected.itemsLink || (Array.isArray(selected.itemLinks) && selected.itemLinks.length > 0)
+            ? '<button id="openItemsBtn" class="btn btn-outline-primary btn-sm ms-2">Open Data Access</button>'
             : 'n/a'
 
         detailsPanel.innerHTML = `
@@ -954,30 +822,27 @@
           <p><strong>proj:epsg:</strong> ${selected.projEpsg || 'n/a'}</p>
           <p><strong>proj:proj4:</strong> ${selected.projProj4 || 'n/a'}</p>
 
-          <div>
-            <strong>Data Files:</strong>
-            ${dataFilesMarkup}
-            ${!isErddapService && selected.itemsLink && state.itemsByDatasetId[selected.id] ? `<span class="items-summary ms-2">${state.itemsByDatasetId[selected.id].length} assets, ${state.itemsByDatasetId[selected.id].filter((asset) => asset.isNetcdf).length} netCDF</span>` : ''}
-          </div>
+          <p><strong>HTTPS Datafile:</strong> ${httpsDatafileMarkup}</p>
+
+          <p>
+            <strong>Data Access:</strong>
+            ${dataAccessControlMarkup}
+            ${!isErddapService && (selected.itemsLink || (Array.isArray(selected.itemLinks) && selected.itemLinks.length > 0)) && state.itemsByDatasetId[selected.id] ? `<span class="items-summary ms-2">${state.itemsByDatasetId[selected.id].length} assets, ${state.itemsByDatasetId[selected.id].filter((asset) => asset.isNetcdf).length} netCDF</span>` : ''}
+          </p>
+
+
 
           <p>
             <strong>Dataset Metadata:</strong>
             <button id="openMetadataBtn" class="btn btn-outline-primary btn-sm ms-2">View Metadata</button>
             ${isExternalLink(selected.datasetInformation) ? `<a class="ms-2" href="${selected.datasetInformation}" target="_blank" rel="noreferrer">Open external page</a>` : ''}
           </p>
-<!--          <div><strong>Data Access Form:</strong> ${dataAccessMarkup}</div> -->
+
 
 
 
           ${selected.loadError ? `<p class="error">Some details were unavailable: ${selected.loadError}</p>` : ''}
         `
-
-        if (selected.bbox) {
-          setTimeout(() => {
-            renderMap(selected.bbox)
-          }, 0)
-        }
-
         const openItemsBtn = document.getElementById('openItemsBtn')
         if (openItemsBtn) {
           openItemsBtn.addEventListener('click', () => {
@@ -992,39 +857,6 @@
           })
         }
       }
-
-      // function renderMap(bbox) {
-      //   const mapElement = document.getElementById('bboxMap')
-      //   if (!mapElement) return
-
-      //   if (map && mapContainerElement !== mapElement) {
-      //     map.remove()
-      //     map = null
-      //     bboxLayer = null
-      //   }
-
-      //   if (!map) {
-      //     map = L.map(mapElement, { center: [0, 0], zoom: 2, worldCopyJump: true })
-      //     mapContainerElement = mapElement
-      //     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      //       maxZoom: 18,
-      //       attribution: '&copy; OpenStreetMap contributors',
-      //     }).addTo(map)
-      //   } else {
-      //     map.invalidateSize()
-      //   }
-
-      //   const [west, south, east, north] = bbox
-      //   const bounds = [[south, west], [north, east]]
-
-      //   if (bboxLayer) {
-      //     bboxLayer.remove()
-      //   }
-
-      //   bboxLayer = L.rectangle(bounds, { color: '#2c6ead', weight: 2, fillOpacity: 0.15 }).addTo(map)
-      //   map.fitBounds(bounds, { padding: [20, 20] })
-      //   setTimeout(() => map.invalidateSize(), 0)
-      // }
 
       function applySearch() {
         const query = searchInput.value.trim().toLowerCase()
@@ -1076,11 +908,11 @@
               if (!id) return null
 
               try {
-                const collection = await fetchJson(`polarwatch_stac/collections/${encodeURIComponent(id)}/collection.json`)
+                const collection = await fetchJson(`stac/collections/${encodeURIComponent(id)}/collection.json`)
                 return {
                   id,
                   title: collection.title || link.title || id,
-                  collectionUrl: `polarwatch_stac/collections/${encodeURIComponent(id)}/collection.json`,
+                  collectionUrl: `stac/collections/${encodeURIComponent(id)}/collection.json`,
                   summary: collection.description || '',
                   dateRange: extractDateRange(collection),
                   serviceType: extractServiceType(collection),
@@ -1090,8 +922,11 @@
                   bbox: extractBbox(collection),
                   providers: collection.providers || [],
                   dataAccessForm: extractDataAccessForm(collection),
+                  erddapDirectoryLink: extractErddapDataFormLink(collection),
+                  httpsDataFilesLink: extractHttpsDataFilesLink(collection),
                   datasetInformation: extractDatasetInformation(collection),
                   itemsLink: extractItemsLink(collection),
+                  itemLinks: extractItemLinks(collection),
                   allLinks: extractAllLinks(collection),
                   keywords: collection.keywords || [],
                 }
@@ -1099,7 +934,7 @@
                 return {
                   id,
                   title: link.title || id,
-                  collectionUrl: `polarwatch_stac/collections/${encodeURIComponent(id)}/collection.json`,
+                  collectionUrl: `stac/collections/${encodeURIComponent(id)}/collection.json`,
                   summary: '',
                   dateRange: 'n/a',
                   serviceType: '',
@@ -1109,8 +944,11 @@
                   bbox: null,
                   providers: [],
                   dataAccessForm: '',
+                  erddapDirectoryLink: '',
+                  httpsDataFilesLink: '',
                   datasetInformation: '',
                   itemsLink: '',
+                  itemLinks: [],
                   allLinks: [],
                   keywords: [],
                   loadError: error.message,
